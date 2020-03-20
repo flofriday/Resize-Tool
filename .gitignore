@@ -1,0 +1,10 @@
+# Ignore pythons compile cache
+__pycache__
+
+# Ignore OS specific files
+.DS_Store
+
+# Ignore package build directories
+build
+dist
+Resize\ Tool.spec

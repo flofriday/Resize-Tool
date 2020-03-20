@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog as fd, messagebox as mb
+from tkinter import filedialog as fd, messagebox as mb, ttk
 import os
 from PIL import Image
 import platform
@@ -133,8 +133,10 @@ def resize():
 
 
 # Create the window
-w = tk.Tk()
-w.title("Resize Images")
+win = tk.Tk()
+win.title("Resize Images")
+win.resizable(False, False)
+w = ttk.Frame(win)
 
 # Create the global state variables
 folder = tk.StringVar()
@@ -144,30 +146,29 @@ text = tk.StringVar()
 text.set("Select a folder")
 
 # Size selection
-size_frame = tk.Frame(w)
+size_frame = ttk.Frame(w)
 size_frame.pack()
-size_label = tk.Label(size_frame, text="Size (Pixel)", fg="#000")
-size_entry = tk.Entry(size_frame, textvariable=size)
+size_label = ttk.Label(size_frame, text="Size (Pixel)")
+size_entry = ttk.Entry(size_frame, textvariable=size)
 size_label.pack(side=tk.LEFT)
 size_entry.pack(side=tk.LEFT)
 
 # Folder selection
-folder_frame = tk.Frame(w)
+folder_frame = ttk.Frame(w)
 folder_frame.pack()
-folder_entry = tk.Entry(folder_frame, textvariable=folder)
-folder_button = tk.Button(
-    folder_frame, text="Browse...", fg="#000", command=open_folder_dialog
-)
+folder_entry = ttk.Entry(folder_frame, textvariable=folder)
+folder_button = ttk.Button(folder_frame, text="Browse...", command=open_folder_dialog)
 folder_entry.pack(side=tk.LEFT)
 folder_button.pack(side=tk.LEFT)
 
 # Text to communicate with the user
-text_label = tk.Label(w, textvariable=text, fg="#000")
+text_label = ttk.Label(w, textvariable=text)
 text_label.pack()
 
 # Resize button
-resize_button = tk.Button(w, text="Resize", fg="#000", command=resize)
+resize_button = ttk.Button(w, text="Resize", command=resize)
 resize_button.pack()
 
 # Start the app
-w.mainloop()
+w.pack()
+win.mainloop()
