@@ -37,7 +37,15 @@ def get_images(folder):
 # Open the file dialog and ask the user for a folder. Then also set the notify
 # text to tell the user how many images are found int that folder
 def open_folder_dialog():
-    folder.set(fd.askdirectory(initialdir=str(Path.home()), title="Selecte a folder"))
+    # Calculate the path to open the dialog
+    initial_path = folder.get()
+    if initial_path == "":
+        initial_path = str(Path.home())
+
+    # Open the dialog
+    folder.set(
+        fd.askdirectory(initialdir=initial_path, title="Selecte a folder")
+    )
     images = get_images(folder.get())
     text.set(f"{len(images)} images found")
 
@@ -97,6 +105,12 @@ def resize():
         text.set("Size musst at least be 10")
         return
 
+    # Get the images in the current folder and throw an error if there are no
+    images = get_images(folder.get())
+    if len(images) <= 0:
+        text.set("There are no images to resize")
+        return
+
     # Create the folder to put the resized images in. If the folder already
     # exists, delete it and then recreate it to ensure it is empty.
     outpath = os.path.join(folder.get(), "Resized Images")
@@ -104,12 +118,12 @@ def resize():
         rmtree(outpath)
     os.makedirs(outpath)
 
-    # Get all images form the folder, loop over them and resize each one
-    images = get_images(folder.get())
+    # Loop over the images and resize each one
     error_images = []
     for i, image in enumerate(images):
         text.set(f"Resizing image {i+1} of {len(images)}")
-        w.update()
+        win.update_idletasks()
+        win.update()
         try:
             resize_image(folder.get(), image, size.get())
         except Exception:
@@ -137,6 +151,7 @@ win = tk.Tk()
 win.title("Resize Images")
 win.resizable(False, False)
 w = ttk.Frame(win)
+w.pack()
 
 # Create the global state variables
 folder = tk.StringVar()
@@ -157,12 +172,14 @@ size_entry.pack(side=tk.LEFT)
 folder_frame = ttk.Frame(w)
 folder_frame.pack()
 folder_entry = ttk.Entry(folder_frame, textvariable=folder)
-folder_button = ttk.Button(folder_frame, text="Browse...", command=open_folder_dialog)
+folder_button = ttk.Button(
+    folder_frame, text="Browse...", command=open_folder_dialog
+)
 folder_entry.pack(side=tk.LEFT)
 folder_button.pack(side=tk.LEFT)
 
 # Text to communicate with the user
-text_label = ttk.Label(w, textvariable=text)
+text_label = ttk.Label(w, textvariable=text, state="disabled")
 text_label.pack()
 
 # Resize button
@@ -170,5 +187,4 @@ resize_button = ttk.Button(w, text="Resize", command=resize)
 resize_button.pack()
 
 # Start the app
-w.pack()
 win.mainloop()
