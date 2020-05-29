@@ -1,5 +1,5 @@
 # Resize Tool
-A very simple too to resize multiple images
+A very simple tool to resize multiple images
 ![Screenshot](screenshot.png)
 
 ## Try it 
